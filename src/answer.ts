@@ -95,10 +95,13 @@ const questionTemplate = createTemplate`
     <hr>
 `;
 
-export async function answer(id: string, redirect: boolean, env: Env): Promise<string> {
+export async function answer(id: string, redirect: boolean, env: Env, raw: boolean = true): Promise<string> {
 	const url = `https://api.zhihu.com/v4/answers/${id}?include=content%2Cexcerpt%2Cauthor%2Cvoteup_count%2Ccomment_count%2Cquestion%2Ccreated_time%2Cquestion.detail`;
 	const response = await fetch(url);
 	const data = await response.json<Answer>();
+	if (raw) {
+		return JSON.stringify(data, null, 2);
+	}
 	const createdTime = new Date(data.created_time * 1000);
 
 	return template({
